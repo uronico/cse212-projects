@@ -1,59 +1,35 @@
 ﻿public class PriorityQueue
 {
-    private List<PriorityItem> _queue = new();
+    private class Item
+    {
+        public string Value { get; }
+        public int Priority { get; }
+        public Item(string value, int priority)
+        {
+            Value = value;
+            Priority = priority;
+        }
+    }
 
-    /// <summary>
-    /// Add a new value to the queue with an associated priority.  The
-    /// node is always added to the back of the queue regardless of 
-    /// the priority.
-    /// </summary>
-    /// <param name="value">The value</param>
-    /// <param name="priority">The priority</param>
+    private readonly List<Item> _items = new();
+
     public void Enqueue(string value, int priority)
     {
-        var newNode = new PriorityItem(value, priority);
-        _queue.Add(newNode);
+        _items.Add(new Item(value, priority));
     }
 
     public string Dequeue()
     {
-        if (_queue.Count == 0) // Verify the queue is not empty
-        {
-            throw new InvalidOperationException("The queue is empty.");
-        }
+        if (_items.Count == 0)
+            throw new InvalidOperationException("Queue is empty.");
 
-        // Find the index of the item with the highest priority to remove
-        var highPriorityIndex = 0;
-        for (int index = 1; index < _queue.Count - 1; index++)
-        {
-            if (_queue[index].Priority >= _queue[highPriorityIndex].Priority)
-                highPriorityIndex = index;
-        }
+        // Find the highest priority
+        int maxPriority = _items.Max(i => i.Priority);
 
-        // Remove and return the item with the highest priority
-        var value = _queue[highPriorityIndex].Value;
-        return value;
-    }
-
-    public override string ToString()
-    {
-        return $"[{string.Join(", ", _queue)}]";
-    }
-}
-
-internal class PriorityItem
-{
-    internal string Value { get; set; }
-    internal int Priority { get; set; }
-
-    internal PriorityItem(string value, int priority)
-    {
-        Value = value;
-        Priority = priority;
-    }
-
-    public override string ToString()
-    {
-        return $"{Value} (Pri:{Priority})";
+        // Find the first item with the highest priority (FIFO)
+        int index = _items.FindIndex(i => i.Priority == maxPriority);
+        string result = _items[index].Value;
+        _items.RemoveAt(index);
+        return result;
     }
 }

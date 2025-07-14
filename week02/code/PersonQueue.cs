@@ -3,33 +3,27 @@
 /// </summary>
 public class PersonQueue
 {
-    private readonly List<Person> _queue = new();
+    private readonly List<Person> _list = new();
 
-    public int Length => _queue.Count;
+    public int Length => _list.Count;
+    public bool IsEmpty() => _list.Count == 0;
 
-    /// <summary>
-    /// Add a person to the queue
-    /// </summary>
-    /// <param name="person">The person to add</param>
     public void Enqueue(Person person)
     {
-        _queue.Insert(0, person);
+        _list.Add(person); // Add to the end
     }
 
     public Person Dequeue()
     {
-        var person = _queue[0];
-        _queue.RemoveAt(0);
+        if (_list.Count == 0)
+            throw new InvalidOperationException("No one in the queue.");
+        var person = _list[0]; // Remove from the front
+        _list.RemoveAt(0);
         return person;
-    }
-
-    public bool IsEmpty()
-    {
-        return Length == 0;
     }
 
     public override string ToString()
     {
-        return $"[{string.Join(", ", _queue)}]";
+        return string.Join(", ", _list.Select(p => p.Name));
     }
 }
