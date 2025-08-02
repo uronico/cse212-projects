@@ -186,7 +186,7 @@ public static class Recursion
         {
             int nx = x + dx;
             int ny = y + dy;
-            if (maze.IsValidMove(nx, ny, currPath))
+            if (maze.IsValidMove(currPath, nx, ny))
             {
                 SolveMaze(results, maze, nx, ny, currPath);
             }
